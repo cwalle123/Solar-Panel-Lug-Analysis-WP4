@@ -1,1 +1,22 @@
-Main
+import math
+import numpy
+import time
+
+#Input
+
+#Bearing Stress
+
+#Fastener Bearing
+
+#Pull Through
+
+#Thermal Stress
+
+#Outputs
+MS_Bearing_Stress = 1
+MS_Fastener_Bearing = 1
+MS_Pull_Through = 1
+MS_Thermal_Stress = 1
+
+if MS_Bearing_Stress <= 0 and MS_Fastener_Bearing <= 0 and MS_Pull_Through <= 0 and MS_Thermal_Stress <= 0:
+    print("Failure")
