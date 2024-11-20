@@ -21,18 +21,18 @@ def vectorized(func):
 
 
 def convention_for_safety_margin_calculation(inputs):
-    """this one just checks one failure criterion and outputs the name of the criterion as well as the safety margin"""
+    """this one just checks one failure criterion and outputs the safety margin"""
     ...
-    # first is the name of the failure mode check, then the safety margin
-    return str, float
+    #  the safety margin
+    return  float
 
 
 def convention_for_verification_check(inputs):
     """this one is a true/false output on whether some condition is valid. for eg. we should have a check for whether
     all of the lengths are actually greater than zero or stuff like that"""
     ...
-    # first is name of the verification check, then the True/False on whether the check is passed
-    return str, bool
+    # the True/False on whether the check is passed
+    return  bool
 
 
 @vectorized
@@ -42,6 +42,14 @@ def positivity_check(design_vector):
         return True
     else:
         return False
+
+@vectorized
+def X_compliance_check(args):
+    ...
+
+@vectorized
+def w_compliance_check(args):
+    ...
 
 
 # Objective function
