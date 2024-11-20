@@ -44,12 +44,30 @@ def positivity_check(design_vector):
         return False
 
 @vectorized
-def X_compliance_check(args):
-    ...
+def positivity_check(design_vector):
+    """Verifies no length is given as negative, as that would be nonsensical"""
+    if np.all(design_vector > 0):
+        return True
+    else:
+        return False
+
 
 @vectorized
-def w_compliance_check(args):
-    ...
+def X_compliance_check(t_1, X, D_2, h):
+    """Verifies the horizontal direction passes thread clearance"""
+    if h + 2*t_1 + 6*D_2 <= X:
+        return True
+    else:
+        return False
+
+
+@vectorized
+def w_compliance_check(w, D_2):
+    """Verifies the vertical direction passes thread clearance"""
+    if 5*D_2 <= 2:
+        return True
+    else:
+        return False
 
 
 # Objective function
