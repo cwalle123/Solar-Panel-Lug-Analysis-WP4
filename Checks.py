@@ -10,7 +10,7 @@ import math
 
 
 # elastic modulus [Pa], yield strength [Pa], shear strength [Pa], density [kg/m^3], thermal expansion coefficient [1/K]
-materials = {
+material_properties = {
     'Al 7075 T6': (71.7e9, 430e6, .5*430e6, 2810, 2.36e-5)
 }
 
@@ -20,12 +20,12 @@ def vectorized(func):
     return np.vectorize(func)
 
 
-
 def convention_for_safety_margin_calculation(inputs):
     """this one just checks one failure criterion and outputs the name of the criterion as well as the safety margin"""
     ...
     # first is the name of the failure mode check, then the safety margin
     return str, float
+
 
 def convention_for_verification_check(inputs):
     """this one is a true/false output on whether some condition is valid. for eg. we should have a check for whether
@@ -33,6 +33,15 @@ def convention_for_verification_check(inputs):
     ...
     # first is name of the verification check, then the True/False on whether the check is passed
     return str, bool
+
+
+@vectorized
+def positivity_check(design_vector):
+    """Ensures no length is given as negative, as that would be nonsensical"""
+    if np.all(design_vector > 0):
+        return True
+    else:
+        return False
 
 
 # Objective function
