@@ -2,27 +2,27 @@ import numpy as np
 
 def bearing_check(candidate_vector, force_vector, material):
     # Extract material property
-    sigma_bearing = material['sigma_bearing']  # [Pa]
+    sigma_bearing = material['sigma_bearing'] 
 
     # Extract candidate variables
-    t_2 = candidate_vector[1]  # Plate thickness
-    x = candidate_vector[2]  # Fastener pitch in x
-    D_2 = candidate_vector[4]  # Fastener diameter
-    w = candidate_vector[6]  # Width of the plate
-    e_1 = candidate_vector[7]  # Edge distance in y
-    e_2 = candidate_vector[8]  # Edge distance in x
+    t_2 = candidate_vector[1]  
+    x = candidate_vector[2] 
+    D_2 = candidate_vector[4] 
+    w = candidate_vector[6] 
+    e_1 = candidate_vector[7] 
+    e_2 = candidate_vector[8] 
 
     # Extract applied forces
-    Fx = force_vector[0]  # Force in x-direction
-    Fz = force_vector[2]  # Force in z-direction
-    My = force_vector[4]  # Moment about y-axis
+    Fx = force_vector[0] 
+    Fz = force_vector[2] 
+    My = force_vector[4]
 
     # Constants
     nf = 4  # Number of fasteners
 
     # Compute geometric parameters
-    dist = np.sqrt((x / 2 - e_2) ** 2 + (w / 2 - e_1) ** 2)  # Distance to fasteners
-    A_hole = 0.25 * np.pi * D_2 ** 2  # Area of a fastener hole
+    dist = np.sqrt((x / 2 - e_2) ** 2 + (w / 2 - e_1) ** 2)  
+    A_hole = 0.25 * np.pi * D_2 ** 2
 
     # Compute forces on fasteners
     F_in_plane_x = Fx / nf
@@ -42,8 +42,8 @@ def bearing_check(candidate_vector, force_vector, material):
 
     # Compute force components
     force_components = np.vstack([
-        F_in_plane_M_y * np.cos(angles),  # x-components
-        F_in_plane_M_y * np.sin(angles)  # y-components
+        F_in_plane_M_y * np.cos(angles), 
+        F_in_plane_M_y * np.sin(angles) 
     ]).T
 
     # Combine forces
