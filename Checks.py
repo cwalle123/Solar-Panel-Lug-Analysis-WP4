@@ -46,12 +46,12 @@ def positivity_check(design_vector):
 
 # Objective function
 @vectorized
-def mass(Density_Lug, Thickness_Lug_1, Thickness_Lug_2, w_Lug, h_Lug, Diameter_Lug_1, Diameter_Lug_2): #all inputs should be given in SI units
+def mass(Density_Lug, Thickness_Lug_1, Thickness_Lug_2, w_Lug, TotalLength_Lug, Diameter_Lug_1, Diameter_Lug_2): #all inputs should be given in SI units
     """This function calculates the total mass of the lug by calculating and summing the volumes of
     the hinges and the backplate, and then multiplies the total volume by the density of the material"""
     HingeArea_Lug = w_Lug**(2) + (w_Lug**(2) * math.pi) / (8) - (Diameter_Lug_1**(2) * math.pi) / (4)  # m^2
     TotalHingeVolume_Lug = 2 * Thickness_Lug_1 * HingeArea_Lug  # m^3
-    BackplateArea_Lug = (3 * h_Lug + 2 * Thickness_Lug_1) * w_Lug - Diameter_Lug_2**(2) * math.pi  # m^2
+    BackplateArea_Lug = TotalLength_Lug * w_Lug - Diameter_Lug_2**(2) * math.pi  # m^2
     BackplateVolume_Lug = Thickness_Lug_2 * BackplateArea_Lug  # m^3
     TotalVolume = TotalHingeVolume_Lug + BackplateVolume_Lug  # m^3
     return Density_Lug * TotalVolume  # kg
