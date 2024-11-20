@@ -27,10 +27,10 @@ def verify_validity(candidate_vector):
     if not thread_edge_distance_check(e_1, e_2, D_2):
         return False
 
-    if not w_compliance_check(w, D_2):
+    if not w_compliance_check(w, D_1, D_2, e_1):
         return False
 
-    if not X_compliance_check(t_1, X, D_2, h):
+    if not X_compliance_check(t_1, X, e_2, h):
         return False
 
     return True
@@ -45,32 +45,35 @@ def compute_safety_margins(candidate_vector, material):
     # Collect material data
     elastic_modulus, sigma_ult, tau_ult, rho, thermal_expansion = material_properties[material]
 
-    safety_margins = np.array([1, 2, 3, 4, 5])
+    bearing_check_SM = bearing_check(candidate_vector, applied_load_vector, material)
+    safety_margins = np.array([bearing_check_SM, 2, 3, 4, 5])
 
     return safety_margins
 
 
-def calculator(candidate_vector, material):
+def calculator(candidate_vector, material, load_vector):
 
     # Unpack the candidate vector
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
     # Collect material data
     elastic_modulus, sigma_ult, tau_ult, rho, thermal_expansion = material_properties[material]
+    # Unpack the load vector
+    F_x, F_y, F_z, M_x, M_y, M_z = load_vector
 
     # Compatibility verification
     if not verify_validity(candidate_vector):
         # Configuration failed, check case be case to print out which criteria failed:
-        if not positivity_check(candidate_vector):
-            print("Positivity check failed")
-
-        if not thread_edge_distance_check(e_1, e_2, D_2):
-            print("Thread-edge distance check failed")
-
-        if not w_compliance_check(w, D_2):
-            print("w compliance check failed")
-
-        if not X_compliance_check(t_1, X, D_2, h):
-            print("X compliance check failed")
+        # if not positivity_check(candidate_vector):
+        #     print("Positivity check failed")
+        #
+        # if not thread_edge_distance_check(e_1, e_2, D_2):
+        #     print("Thread-edge distance check failed")
+        #
+        # if not w_compliance_check(w, D_1, D_2, e_1):
+        #     print("w compliance check failed")
+        #
+        # if not X_compliance_check(t_1, X, e_2, h):
+        #     print("X compliance check failed")
 
         raise ValueError("Configuration fails physical compatibility")
 
@@ -105,7 +108,7 @@ def main():
 
     dummy = input("Press Enter to run analysis")
 
-    safety_margins, mass_of_design = calculator(candidate_vector, "Al 7075 T6")
+    safety_margins, mass_of_design = calculator(candidate_vector, "Al 7075 T6", applied_load_vector)
 
     print("Here is the safety margins: ")
     print(safety_margins)
