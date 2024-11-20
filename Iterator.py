@@ -14,4 +14,32 @@ import numpy as np
 from calculator import *
 from checks import *
 
+"""Pseudocode idea made with help from GPT-4"""
+# Example of main loop
+max_iterations = _
+material_used = _
+start_point = _
+current_solution = start_point
+for iteration in range(max_iterations):
+    # Generate a candidate solution
+    candidate = generate_neighbor(current_solution)
+
+    # Verify the solution
+    if not verify_solution(candidate):
+        continue
+
+    # Compute objective function
+    objective = compute_objective(candidate)
+
+    # Simulated annealing step
+    if accept_solution(objective, current_objective, temperature):
+        current_solution = candidate
+        current_objective = objective
+
+    # Update temperature
+    temperature = cool_down(temperature)
+
+
+
+
 
