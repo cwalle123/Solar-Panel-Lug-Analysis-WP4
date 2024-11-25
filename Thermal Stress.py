@@ -39,5 +39,5 @@ def thermal_load_fastener(thermalExp_coef_fastener, thermalExp_coef_clamped, tem
     
     #we only care about maximum so we take max
     
-    return np.vectorize(safety_factor)
+    return safety_factor
     
