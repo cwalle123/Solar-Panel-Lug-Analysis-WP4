@@ -59,7 +59,13 @@ def bearing_check(candidate_vector, force_vector, material):
     sigma_bearable = P_max / (t_2 * D_2)
     MS = (sigma_bearing / sigma_bearable) - 1
 
-    return MS
+    # Compute the bearing of the wall
+    t_wall = 0.0005
+    sigma_yield_wall = 345000000
+    sigma_wall = P_max / (t_wall * D_2)
+    MS_wall = (sigma_yield_wall / sigma_wall) - 1
+    
+    return MS, MS_wall
 
 
 
