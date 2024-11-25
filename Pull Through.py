@@ -10,7 +10,11 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     D_fi = fastener_properties[fastener][0]  # Inner fastener hole diameter [m]
 
     # Extract applied loads
+    F_x = candidate_vector[0]
     F_y = applied_load_vector[1]  # Force in y-direction [N]
+    F_z =applied_load_vector[2]
+    M_x = candidate_vector[3]
+    M_y = applied_load_vector[4]
     M_z = applied_load_vector[5]  # Moment about z-axis [Nm]
     nf = 4  # Number of fasteners
 
@@ -21,6 +25,13 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     w = candidate_vector[6]  # Plate width [m]
     e_1 = candidate_vector[7]  # Edge distance in y [m]
     e_2 = candidate_vector[8]  # Edge distance in x [m]
+
+    fasteners = np.array([
+        [-(x / 2 - e_2), -(w / 2 - e_1)],
+        [-(x / 2 - e_2), (w / 2 - e_1)],
+        [(x / 2 - e_2), -(w / 2 - e_1)],
+        [(x / 2 - e_2), (w / 2 - e_1)]
+    ])
 
     # TODO DELETE LATER WHEN FASTENER PROPERTIES WORK
     D_fi = D_2
@@ -36,13 +47,14 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     A_normal = np.pi * (D_fo ** 2 - D_fi ** 2) / 4  # Annular shear area under the fastener head [m²]
 
     # Compute forces on fasteners
-    F_in_plane_y = F_y / nf  # In-plane force due to F_y [N]
-    F_in_plane_M_z = (M_z * A_hole * dist) / (nf * A_hole * dist ** 2)  # Moment-induced force [N]
+    M_z_total = F_x * (w / 2 - e_1) + M_z
+    M_x_total = F_z * (w / 2 - e_1) + M_x
+    F_in_plane_y = F_y / nf - M_x_total/(x-2*e_1) + M_z_total/(w - 2*e_1) # In-plane force due to F_y [N]
 
     # Compute stresses
     sigma_normal = F_in_plane_y / A_normal  # Normal stress due to F_y [Pa]
-    tau_t_2 = F_in_plane_M_z / (A_shear * t_2)  # Shear stress on the plate [Pa]
-    tau_t_3 = F_in_plane_M_z / (A_normal * t_3)  # Shear stress on the wall [Pa]
+    tau_t_2 = F_in_plane_y / (A_shear * t_2)  # Shear stress on the plate [Pa]
+    tau_t_3 = F_in_plane_y / (A_normal * t_3)  # Shear stress on the wall [Pa]
 
     # Von Mises stresses
     sigma_VM_t_2 = np.sqrt(sigma_normal ** 2 + 3 * tau_t_2 ** 2)  # Von Mises stress on the plate [Pa]
