@@ -2,7 +2,7 @@ import numpy as np
 
 def bearing_check(candidate_vector, force_vector, material):
     # Extract material property
-    sigma_bearing = material['sigma_bearing'] 
+    sigma_bearing = material_properties[material][1]
 
     # Extract candidate variables
     t_2 = candidate_vector[1]  
