@@ -1,12 +1,13 @@
 import numpy as np
 
 
-def pull_through_check(applied_load_vector, candidate_vector, material):
+def pull_through_check(applied_load_vector, candidate_vector, material, fastener):
 
     # Material properties
     yield_stress = material_properties[material][1]  # Shear yield strength [Pa]
-    D_fo = ...  # Outer fastener head diameter [m]
-    D_fi = ...  # Inner fastener hole diameter [m]
+    # TODO Update once fasteners are implemented
+    D_fo = fastener_properties[fastener][0]  # Outer fastener head diameter [m]
+    D_fi = fastener_properties[fastener][0]  # Inner fastener hole diameter [m]
 
     # Extract applied loads
     F_y = applied_load_vector[1]  # Force in y-direction [N]
@@ -20,6 +21,10 @@ def pull_through_check(applied_load_vector, candidate_vector, material):
     w = candidate_vector[6]  # Plate width [m]
     e_1 = candidate_vector[7]  # Edge distance in y [m]
     e_2 = candidate_vector[8]  # Edge distance in x [m]
+
+    # TODO DELETE LATER WHEN FASTENER PROPERTIES WORK
+    D_fi = D_2
+    D_fo = 1.5*D_fi
 
     # Fixed wall thickness
     t_3 = 0.0005  # Wall thickness [m]
@@ -35,7 +40,7 @@ def pull_through_check(applied_load_vector, candidate_vector, material):
     F_in_plane_M_z = (M_z * A_hole * dist) / (nf * A_hole * dist ** 2)  # Moment-induced force [N]
 
     # Compute stresses
-    sigma_normal = F_y / A_normal  # Normal stress due to F_y [Pa]
+    sigma_normal = F_in_plane_y / A_normal  # Normal stress due to F_y [Pa]
     tau_t_2 = F_in_plane_M_z / (A_shear * t_2)  # Shear stress on the plate [Pa]
     tau_t_3 = F_in_plane_M_z / (A_normal * t_3)  # Shear stress on the wall [Pa]
 
@@ -48,4 +53,3 @@ def pull_through_check(applied_load_vector, candidate_vector, material):
     MS_t_3 = (yield_stress / sigma_VM_t_3) - 1  # Margin of safety for the wall
 
     return MS_t_2, MS_t_3
-
