@@ -32,9 +32,9 @@ def bearing_check(candidate_vector, force_vector, material):
     # Fastener locations
     fasteners = np.array([
         [-(x / 2 - e_2), -(w / 2 - e_1)],
-        [-(x / 2 - e_1), (w / 2 - e_1)],
-        [(x / 2 - e_2), -(w / 2 - e_2)],
-        [(x / 2 - e_2), (w / 2 - e_2)]
+        [-(x / 2 - e_2), (w / 2 - e_1)],
+        [(x / 2 - e_2), -(w / 2 - e_1)],
+        [(x / 2 - e_2), (w / 2 - e_1)]
     ])
 
     # Compute angles for fasteners
