@@ -12,9 +12,10 @@ Created on Wed Nov 20 14:32:43 2024
 import numpy as np
 '''inputs'''
 
-
+'''dummy values'''
 #Stiffness area of fastener
 stiffnessArea_fastener = 1
+#force ratio to be determined at fastening section
 force_ratio = 1
 thermalExp_coef_fastener = 1
 thermalExp_coef_clamped = 1
