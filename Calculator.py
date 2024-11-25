@@ -15,6 +15,7 @@ from checks import *
 # F_x, F_y, F_z, M_x, M_y, M_z
 applied_load_vector = np.array([0, 0, 426, 0, 0, 0])
 
+
 def verify_validity(candidate_vector):
     """Runs a multitude of different checks for verifying the validity of the design candidate
     Includes physical compatibility checks like non-negative lengths, no clipping of thread holes etc. """
@@ -44,9 +45,15 @@ def compute_safety_margins(candidate_vector, material):
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
     # Collect material data
     elastic_modulus, sigma_ult, tau_ult, rho, thermal_expansion = material_properties[material]
+    # Collect temperature data
+    T_min, T_max, T_ref = temperatures
 
-    bearing_check_SM = bearing_check(candidate_vector, applied_load_vector, material)
-    safety_margins = np.array([bearing_check_SM, 2, 3, 4, 5])
+    bearing_check_SM, SC_wall_SM = bearing_check(candidate_vector, applied_load_vector, material)
+
+    # thermal_check_SM = thermal_load_fastener(tbd, thermal_expansion, elastic_modulus, TBD, TBD2, T_ref, T_max, T_min, np.pi/4*D_2**2, TBD3)
+    thermal_check_SM = 1  # TEMPORARY
+
+    safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, 4, 5])
 
     return safety_margins
 
