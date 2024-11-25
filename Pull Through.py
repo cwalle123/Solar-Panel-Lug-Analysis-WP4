@@ -4,7 +4,7 @@ import numpy as np
 def pull_through_check(applied_load_vector, candidate_vector, material):
 
     # Material properties
-    yield_stress = material[1]  # Shear yield strength [Pa]
+    yield_stress = material_properties[material][1]  # Shear yield strength [Pa]
     D_fo = ...  # Outer fastener head diameter [m]
     D_fi = ...  # Inner fastener hole diameter [m]
 
