@@ -47,9 +47,9 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     A_normal = np.pi * (D_fo ** 2 - D_fi ** 2) / 4  # Annular shear area under the fastener head [m²]
 
     # Compute forces on fasteners
-    M_z_total = F_x * (w / 2 - e_1) + M_z
+    M_z_total = - (F_x * (w / 2 - e_1)) + M_z
     M_x_total = F_z * (w / 2 - e_1) + M_x
-    F_in_plane_y = F_y / nf - M_x_total/(x-2*e_1) + M_z_total/(w - 2*e_1) # In-plane force due to F_y [N]
+    F_in_plane_y = F_y / nf - M_x_total/(2*x-4*e_1) + M_z_total/(2*w - 4*e_1) # In-plane force due to F_y [N]
 
     # Compute stresses
     sigma_normal = F_in_plane_y / A_normal  # Normal stress due to F_y [Pa]
