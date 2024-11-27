@@ -98,29 +98,25 @@ def calculator(candidate_vector, material, load_vector):
 
 
 def main():
-    """Runs one iteration of the calculator with user defined inputs"""
-    print("Please input your design parameters, all in meters")
-    t_1 = input("t_1: ")
-    t_2 = input("t_2: ")
-    X = input("X: ")
-    D_1 = input("D_1: ")
-    D_2 = input("D_2: ")
-    h = input("h: ")
-    w = input("w: ")
-    e_1 = input("e_1: ")
-    e_2 = input("e_2: ")
+    # Read input CSV using pandas
+    input_df = pd.read_csv('input.csv', encoding='utf-8-sig')
 
-    candidate_vector = np.array([t_1, t_2, X, D_1, D_2, h, w, e_1, e_2]).astype(float)
-    print("Using material Al 7075 T6")
+    # Extract relevant columns for processing
+    candidate_vectors = input_df.iloc[:, :9].astype(float).to_numpy()
+    applied_load_vectors = input_df.iloc[:, 9:15].astype(float).to_numpy()
+    materials = input_df.iloc[:, -1]
 
-    dummy = input("Press Enter to run analysis")
+    # Process each row and store the results
+    results = []
+    for candidate_vector, applied_load_vector, material in zip(candidate_vectors, applied_load_vectors, materials):
+        safety_margins, mass_of_design = calculator(candidate_vector, material, applied_load_vector)
+        results.append([safety_margins, mass_of_design])
 
-    safety_margins, mass_of_design = calculator(candidate_vector, "Al 7075 T6", applied_load_vector)
+    # Create a new DataFrame for the results
+    output_df = pd.DataFrame(results, columns=['safety_margins', 'mass_of_design'])
 
-    print("Here is the safety margins: ")
-    print(safety_margins)
-
-    print(f"And the mass of the design is {mass_of_design} kg")
+    # Write the output to a CSV
+    output_df.to_csv('output.csv', index=False)
 
 
 if __name__ == "__main__":
