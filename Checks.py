@@ -11,12 +11,13 @@ import math
 
 # elastic modulus [Pa], yield strength [Pa], shear strength [Pa], density [kg/m^3], thermal expansion coefficient [1/K]
 material_properties = {
-    'Al 7075 T6': (71.7e9, 430e6, .5*430e6, 2810, 2.36e-5)
+    'Al 7075 T6': (71.7e9, 430e6, .5*430e6, 2810, 2.36e-5),
+    'Ti-6Al-4V': (113.8e9, 880e6, .5*880e6, 4430, 8.6e-6)
 }
 
-# DEFINE FASTENER PROPERTIES
+# head diameter [m], shank diameter [m], shank length [m], d_sm [m], pitch [m], fastener area [m^2], stiffness area [m^2], tensile strength [Pa], thermal expansion coefficient [1/K]
 fastener_properties = {
-    'fastener': (0, 0, 0, 0)
+    'M6x1': (0.01, 0.006, 0.01, 0.0048, 0.001, 2.83e-5, 1.79e-5, 8.96e8, material_properties['Ti-6Al-4V'][-1])
 }
 
 # minimum operating, maximum operating, reference (manufacturing) [K]
@@ -30,6 +31,14 @@ def positivity_check(design_vector):
     else:
         return False
 
+
+def thread_size_check(D_1, D_2, fastener):
+    """Verifies the lug is big enough to fit the threads"""
+    d_shank = fastener_properties[fastener][1]
+    if D_1 >= d_shank and D_2 >= d_shank:
+        return True
+    else:
+        return False
 
 def X_compliance_check(t_1, X, e_2, h):
     """Verifies the horizontal direction passes thread clearance"""
