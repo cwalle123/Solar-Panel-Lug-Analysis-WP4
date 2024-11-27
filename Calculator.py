@@ -1,4 +1,3 @@
-
 """
 calculator.py verifies the validity of a single design, i.e. a single set of design parameters.
 it runs instances of every check function and compiles the resulting safety margins to either
@@ -66,6 +65,7 @@ def compute_safety_margins(candidate_vector, material, fastener, load_vector):
 
     return safety_margins
 
+
 def calculator(candidate_vector, material, fastener, load_vector):
 
     # Unpack the candidate vector
@@ -104,25 +104,24 @@ def calculator(candidate_vector, material, fastener, load_vector):
 
     return safety_margins, mass_of_design
 
+
 def main():
-    # Read input CSV using pandas
+    # Read input CSV
     input_df = pd.read_csv('input.csv', encoding='utf-8-sig')
 
-    # Extract relevant columns for processing
+    # Extract and porcess columns
     candidate_vectors = input_df.iloc[:, :9].astype(float).to_numpy()
     applied_load_vectors = input_df.iloc[:, 9:15].astype(float).to_numpy()
     materials = input_df.iloc[:, -1]
 
-    # Process each row and store the results
+    # Process the rows
     results = []
     for candidate_vector, applied_load_vector, material in zip(candidate_vectors, applied_load_vectors, materials):
-        safety_margins, mass_of_design = calculator(candidate_vector, material, applied_load_vector)
+        safety_margins, mass_of_design = calculator(candidate_vector, material, "M6x1", applied_load_vector)
         results.append([safety_margins, mass_of_design])
 
-    # Create a new DataFrame for the results
+    # Write output
     output_df = pd.DataFrame(results, columns=['safety_margins', 'mass_of_design'])
-
-    # Write the output to a CSV
     output_df.to_csv('output.csv', index=False)
 
 
