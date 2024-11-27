@@ -90,7 +90,11 @@ def bearing_check(candidate_vector, force_vector, material):
     # Compute forces on fasteners
     F_in_plane_x = Fx / nf
     F_in_plane_z = Fz / nf
-    F_in_plane_M_y = (My * A_hole * dist) / (nf * A_hole * dist ** 2)
+    F_in_plane_M_y = (My) / (nf * dist)
+    print(dist)
+    print("F_X", F_in_plane_x)
+    print("F_Z", F_in_plane_z)
+    print("F_MY", F_in_plane_M_y)
 
     # Fastener locations
     fasteners = np.array([
@@ -102,11 +106,12 @@ def bearing_check(candidate_vector, force_vector, material):
 
     # Compute angles for fasteners
     angles = np.arctan2(fasteners[:, 1], fasteners[:, 0])
+    angles_forces = angles + np.pi/2
 
     # Compute force components
     force_components = np.vstack([
-        F_in_plane_M_y * np.cos(angles),
-        F_in_plane_M_y * np.sin(angles)]).T
+        F_in_plane_M_y * np.cos(angles_forces),
+        F_in_plane_M_y * np.sin(angles_forces)]).T
 
     # Combine forces
     P = force_components + np.array([F_in_plane_x, F_in_plane_z])
@@ -224,4 +229,3 @@ def mass(Density_Lug, Thickness_Lug_1, Thickness_Lug_2, w_Lug, TotalLength_Lug, 
     BackplateVolume_Lug = Thickness_Lug_2 * BackplateArea_Lug  # m^3
     TotalVolume = TotalHingeVolume_Lug + BackplateVolume_Lug  # m^3
     return Density_Lug * TotalVolume  # kg
-
