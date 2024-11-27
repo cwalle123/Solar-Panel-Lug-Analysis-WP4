@@ -49,21 +49,22 @@ def compute_safety_margins(candidate_vector, material, fastener, load_vector):
     # Unpack the candidate vector
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
     # Collect material data
-    elastic_modulus, sigma_ult, tau_ult, rho, thermal_expansion = material_properties[material]
+    elastic_modulus, sigma_ult, tau_ult, rho, material_thermal_expansion = material_properties[material]
     # Collect temperature data
     T_min, T_max, T_ref = temperatures
+    # Collect fastener data
+    d_head, d_shank, l_shank, d_sm, pitch, A_fast, A_stiff, fast_strength, fast_thermal_expansion = fastener_properties[fastener]
 
     bearing_check_SM, SC_wall_SM = bearing_check(candidate_vector, load_vector, material)
 
-    # thermal_check_SM = thermal_load_fastener(tbd, thermal_expansion, elastic_modulus, TBD, TBD2, T_ref, T_max, T_min, np.pi/4*D_2**2, TBD3)
-    thermal_check_SM = 1  # TODO fix once fasteners are done
+    # TODO FIGURE OUT THE FORCE RATIO
+    thermal_check_SM = thermal_load_fastener(fast_thermal_expansion, material_thermal_expansion, elastic_modulus, A_stiff, .5, T_ref, T_max, T_min, A_fast, fast_strength)
 
     lug_pullthrough_SM, wall_pullthrough_SM = pull_through_check(load_vector, candidate_vector, material, fastener)
 
     safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, lug_pullthrough_SM, wall_pullthrough_SM])
 
     return safety_margins
-
 
 def calculator(candidate_vector, material, fastener, load_vector):
 
