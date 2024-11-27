@@ -1,3 +1,4 @@
+
 """
 calculator.py verifies the validity of a single design, i.e. a single set of design parameters.
 it runs instances of every check function and compiles the resulting safety margins to either
@@ -7,22 +8,26 @@ it also computes the mass of the design
 
 # External imports
 import numpy as np
+import pandas as pd
 
 # Internal imports
 from checks import *
 
 
 # F_x, F_y, F_z, M_x, M_y, M_z
-applied_load_vector = np.array([0, 0, 426, 0, 0, 0])
+applied_load_vector = np.array([134, 134, 409, 2.39, 2.39, 2.39])
 
 
-def verify_validity(candidate_vector):
+def verify_validity(candidate_vector, fastener):
     """Runs a multitude of different checks for verifying the validity of the design candidate
     Includes physical compatibility checks like non-negative lengths, no clipping of thread holes etc. """
     # Unpack the candidate vector
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
 
     if not positivity_check(candidate_vector):
+        return False
+
+    if not thread_size_check(D_1, D_2, fastener):
         return False
 
     if not thread_edge_distance_check(e_1, e_2, D_2):
@@ -37,7 +42,7 @@ def verify_validity(candidate_vector):
     return True
 
 
-def compute_safety_margins(candidate_vector, material):
+def compute_safety_margins(candidate_vector, material, fastener, load_vector):
     """Checks the physically relevant failure criteria and produces relevant safety factors. If any are negative, the
     computation immediately halts"""
 
@@ -48,17 +53,19 @@ def compute_safety_margins(candidate_vector, material):
     # Collect temperature data
     T_min, T_max, T_ref = temperatures
 
-    bearing_check_SM, SC_wall_SM = bearing_check(candidate_vector, applied_load_vector, material)
+    bearing_check_SM, SC_wall_SM = bearing_check(candidate_vector, load_vector, material)
 
     # thermal_check_SM = thermal_load_fastener(tbd, thermal_expansion, elastic_modulus, TBD, TBD2, T_ref, T_max, T_min, np.pi/4*D_2**2, TBD3)
-    thermal_check_SM = 1  # TEMPORARY
+    thermal_check_SM = 1  # TODO fix once fasteners are done
 
-    safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, 4, 5])
+    lug_pullthrough_SM, wall_pullthrough_SM = pull_through_check(load_vector, candidate_vector, material, fastener)
+
+    safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, lug_pullthrough_SM, wall_pullthrough_SM])
 
     return safety_margins
 
 
-def calculator(candidate_vector, material, load_vector):
+def calculator(candidate_vector, material, fastener, load_vector):
 
     # Unpack the candidate vector
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
@@ -68,7 +75,7 @@ def calculator(candidate_vector, material, load_vector):
     F_x, F_y, F_z, M_x, M_y, M_z = load_vector
 
     # Compatibility verification
-    if not verify_validity(candidate_vector):
+    if not verify_validity(candidate_vector, fastener):
         # Configuration failed, check case be case to print out which criteria failed:
         # if not positivity_check(candidate_vector):
         #     print("Positivity check failed")
@@ -85,7 +92,7 @@ def calculator(candidate_vector, material, load_vector):
         raise ValueError("Configuration fails physical compatibility")
 
     # Safety margin computation
-    safety_margins = compute_safety_margins(candidate_vector, material)
+    safety_margins = compute_safety_margins(candidate_vector, material, fastener, load_vector)
 
     # Compute the objective function
     mass_of_design = mass(rho, t_1, t_2, w, X, D_1, D_2)
@@ -95,7 +102,6 @@ def calculator(candidate_vector, material, load_vector):
     # print(mass_of_design)
 
     return safety_margins, mass_of_design
-
 
 def main():
     # Read input CSV using pandas
