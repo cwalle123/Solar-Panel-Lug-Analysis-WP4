@@ -166,10 +166,10 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     D_fi = fastener_properties[fastener][1]  # Inner fastener hole diameter [m]
 
     # Extract applied loads
-    F_x = candidate_vector[0]
+    F_x = applied_load_vector[0]
     F_y = applied_load_vector[1]  # Force in y-direction [N]
     F_z = applied_load_vector[2]
-    M_x = candidate_vector[3]
+    M_x = applied_load_vector[3]
     M_y = applied_load_vector[4]
     M_z = applied_load_vector[5]  # Moment about z-axis [Nm]
     nf = 4  # Number of fasteners
@@ -199,9 +199,9 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     A_normal = np.pi * (D_fo ** 2 - D_fi ** 2) / 4  # Annular shear area under the fastener head [m²]
 
     # Compute forces on fasteners
-    M_z_total = - F_x * (w / 2 - e_1) + M_z
-    M_x_total = F_z * (w / 2 - e_1) + M_x
-    F_in_plane_y = F_y / nf - M_x_total/((x-2*e_1)*2) + M_z_total/((w - 2*e_1)*2) # In-plane force due to F_y [N]
+    M_z_total = - F_x * w + M_z
+    M_x_total = F_z * w + M_x
+    F_in_plane_y = F_y / nf - M_x_total/((w - 2*e_1)*2) + M_z_total/((x-2*e_2)*2) # In-plane force due to F_y [N]
 
     # Compute stresses
     sigma_normal = F_in_plane_y / A_normal  # Normal stress due to F_y [Pa]
