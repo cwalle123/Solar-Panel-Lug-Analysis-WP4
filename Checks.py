@@ -204,8 +204,8 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
 
     # Compute stresses
     sigma_normal = F_in_plane_y / A_normal  # Normal stress due to F_y [Pa]
-    tau_t_2 = F_in_plane_y / (A_shear * t_2)  # Shear stress on the plate [Pa]
-    tau_t_3 = F_in_plane_y / (A_normal * t_3)  # Shear stress on the wall [Pa]
+    tau_t_2 = F_in_plane_y / (np.pi * D_2 * t_2)  # Shear stress on the plate [Pa]
+    tau_t_3 = F_in_plane_y / (np.pi * D_2 * t_3)  # Shear stress on the wall [Pa]
 
     # Von Mises stresses
     sigma_VM_t_2 = np.sqrt(sigma_normal ** 2 + 3 * tau_t_2 ** 2)  # Von Mises stress on the plate [Pa]
@@ -216,7 +216,6 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
     MS_t_3 = (yield_stress / sigma_VM_t_3) - 1  # Margin of safety for the wall
 
     return MS_t_2, MS_t_3
-
 
 # Objective function
 def mass(Density_Lug, Thickness_Lug_1, Thickness_Lug_2, w_Lug, TotalLength_Lug, Diameter_Lug_1, Diameter_Lug_2): #all inputs should be given in SI units
