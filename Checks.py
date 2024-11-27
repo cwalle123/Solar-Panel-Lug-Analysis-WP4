@@ -91,10 +91,6 @@ def bearing_check(candidate_vector, force_vector, material):
     F_in_plane_x = Fx / nf
     F_in_plane_z = Fz / nf
     F_in_plane_M_y = (My) / (nf * dist)
-    print(dist)
-    print("F_X", F_in_plane_x)
-    print("F_Z", F_in_plane_z)
-    print("F_MY", F_in_plane_M_y)
 
     # Fastener locations
     fasteners = np.array([
@@ -106,7 +102,10 @@ def bearing_check(candidate_vector, force_vector, material):
 
     # Compute angles for fasteners
     angles = np.arctan2(fasteners[:, 1], fasteners[:, 0])
-    angles_forces = angles + np.pi/2
+    if My >= 0 :
+        angles_forces = angles + np.pi/2
+    else :
+        angles_forces = angles - np.pi/2
 
     # Compute force components
     force_components = np.vstack([
