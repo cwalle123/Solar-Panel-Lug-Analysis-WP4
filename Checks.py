@@ -157,9 +157,8 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
 
     # Material properties
     yield_stress = material_properties[material][1]  # Shear yield strength [Pa]
-    # TODO Update once fasteners are implemented
     D_fo = fastener_properties[fastener][0]  # Outer fastener head diameter [m]
-    D_fi = fastener_properties[fastener][0]  # Inner fastener hole diameter [m]
+    D_fi = fastener_properties[fastener][1]  # Inner fastener hole diameter [m]
 
     # Extract applied loads
     F_x = candidate_vector[0]
@@ -184,10 +183,6 @@ def pull_through_check(applied_load_vector, candidate_vector, material, fastener
         [(x / 2 - e_2), -(w / 2 - e_1)],
         [(x / 2 - e_2), (w / 2 - e_1)]
     ])
-
-    # TODO DELETE LATER WHEN FASTENER PROPERTIES WORK
-    D_fi = D_2
-    D_fo = 1.5*D_fi
 
     # Fixed wall thickness
     t_3 = 0.0005  # Wall thickness [m]
