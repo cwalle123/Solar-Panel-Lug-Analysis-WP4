@@ -12,12 +12,14 @@ import math
 # elastic modulus [Pa], yield strength [Pa], shear strength [Pa], density [kg/m^3], thermal expansion coefficient [1/K]
 material_properties = {
     'Al 7075 T6': (71.7e9, 430e6, .5*430e6, 2810, 2.36e-5),
-    'Ti-6Al-4V': (113.8e9, 880e6, .5*880e6, 4430, 8.6e-6)
+    'Ti-6Al-4V': (113.8e9, 880e6, .5*880e6, 4430, 8.6e-6),
+    '18-8 Stainless Steel': (193e9, 205e6, .5*205e6, 7900, 16.5e-6)
 }
 
 # head diameter [m], shank diameter [m], shank length [m], d_sm [m], pitch [m], fastener area [m^2], stiffness area [m^2], tensile strength [Pa], thermal expansion coefficient [1/K]
 fastener_properties = {
-    'M6x1': (0.01, 0.006, 0.01, 0.0048, 0.001, 2.83e-5, 1.79e-5, 8.96e8, material_properties['Ti-6Al-4V'][-1])
+    'M6x1': (0.01, 0.006, 0.01, 0.0048, 0.001, 2.83e-5, 1.79e-5, 8.96e8, material_properties['Ti-6Al-4V'][-1]),
+    'M0.5x0.125': (0.00094, 0.0005, 0.0015, 0.000347, 0.000125, 1.96e-7, 9.44e-8, 4.83e8, material_properties['18-8 Stainless Steel'][-1])
 }
 
 # minimum operating, maximum operating, reference (manufacturing) [K]
