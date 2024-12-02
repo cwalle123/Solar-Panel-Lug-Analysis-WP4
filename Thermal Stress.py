@@ -22,7 +22,7 @@ thermalExp_coef_clamped = 1
 E = 1
 
 
-def thermal_load_fastener(thermalExp_coef_fastener, thermalExp_coef_clamped, temp, E_fastener, E_backplate, A_stiffness, force_ratio, temp_ref, temp_working_max, temp_working_min, area_fastener, stress_max_fastener, d_outer, d_inner, distance_thickness, d_thread, shank_length, d_shank):
+def thermal_load_fastener(thermalExp_coef_fastener, thermalExp_coef_clamped, temp, E_fastener, E_backplate, A_stiffness, temp_ref, temp_working_max, temp_working_min, area_fastener, stress_max_fastener, d_outer, d_inner, distance_thickness, d_thread, shank_length, d_shank):
     """calculate the force induced by thermal expansion
         -Material of both fastener and clamped is needed
         -"""
