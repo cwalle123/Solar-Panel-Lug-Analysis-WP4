@@ -13,9 +13,9 @@ import numpy as np
 # to do interpolate the width w, the height h , the e(location of the hole)
 # and the D hole diametre 
 
-fx = 1000
-fy = 1000
-fz = 1000
+fx = 1000 #transvers comp
+fy = 1000 # axial comp
+fz = 1000 # transvers comp
 Mx = 1000
 My = 1000
 Mz = 1000
@@ -25,6 +25,9 @@ W1D1 = w/D1
 h = 40e-2  # flange profile height assumed 
 e = 15e-3  # location of the hole also was assumed 
 sigma_yield = 430e6
+k1 = 0.5
+k2 = 0.1
+k3 = 0.25
   
 def t_min_flage_axial_eq_6(w,D1,sigma_yield,fy):
     k1 = 0.5
@@ -66,7 +69,17 @@ def bearing_check(sigma_yield,D1,t):
     return F
 f = bearing_check(sigma_yield , D1, t_min2)/1000
 
-    
-    
+Pu = sigma_yield * k1 * D1 * t_min2 / 1000 # eq 6
+pbru = sigma_yield  *k2 * D1 * t_min2 /1000# eq 7
+Ptu = sigma_yield * k3 * D1 * t_min2/1000 # eq 10
+
+#oblique loads
+Ra = (fy / min(Pu, pbru))**1.6    # axial comp / min(Pu eq6 ,Pbru eq 7 )    
+Rt = (np.sqrt(fx**2+fz**2) / Ptu)**1.6    
+oblique = Ra + Rt 
+
+#M.S. saftey margins
+
+MS = (1/(oblique)**0.625) - 1
     
          
