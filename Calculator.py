@@ -1,3 +1,4 @@
+
 """
 calculator.py verifies the validity of a single design, i.e. a single set of design parameters.
 it runs instances of every check function and compiles the resulting safety margins to either
@@ -24,6 +25,9 @@ def verify_validity(candidate_vector, fastener):
     t_1, t_2, X, D_1, D_2, h, w, e_1, e_2 = candidate_vector
 
     if not positivity_check(candidate_vector):
+        return False
+
+    if not beam_fit_check(h):
         return False
 
     if not thread_size_check(D_1, D_2, fastener):
@@ -54,14 +58,16 @@ def compute_safety_margins(candidate_vector, material, fastener, load_vector):
     # Collect fastener data
     d_head, d_shank, l_shank, d_sm, pitch, A_fast, A_stiff, fast_strength, fast_thermal_expansion = fastener_properties[fastener]
 
+    # Compute safety margins
     bearing_check_SM, SC_wall_SM = bearing_check(candidate_vector, load_vector, material)
 
-    # TODO FIGURE OUT THE FORCE RATIO
     thermal_check_SM = thermal_load_fastener(fast_thermal_expansion, material_thermal_expansion, elastic_modulus, A_stiff, .5, T_ref, T_max, T_min, A_fast, fast_strength)
 
     lug_pullthrough_SM, wall_pullthrough_SM = pull_through_check(load_vector, candidate_vector, material, fastener)
 
-    safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, lug_pullthrough_SM, wall_pullthrough_SM])
+    flange_SM = flange_check(load_vector, candidate_vector, material, fastener)
+
+    safety_margins = np.array([bearing_check_SM, SC_wall_SM, thermal_check_SM, lug_pullthrough_SM, wall_pullthrough_SM, flange_SM])
 
     return safety_margins
 
