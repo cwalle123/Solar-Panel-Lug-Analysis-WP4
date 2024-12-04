@@ -1,0 +1,114 @@
+import numpy as np
+from numpy import linalg
+import matplotlib.pyplot as plt
+
+def vectorized(func):
+    """Vectorizes the input function."""
+    return np.vectorize(func)
+
+def create_design_matrix(x, functions):
+    """Creates a design matrix based on the input functions and x values."""
+    design_matrix = np.column_stack([vectorized(func)(x) for func in functions])
+    return design_matrix
+
+# Polynomial fitting functions
+def fit1(x): return 1
+def fit2(x): return x
+def fit3(x): return x**2
+def fit4(x): return x**3
+def fit5(x): return x**4
+def fit6(x): return x**5
+
+def compute_K_tu_material1():
+    """Returns the x and y values for A_av/A_br vs K_tu."""
+    data_points = [
+        (0, 0.01),
+        (0.1, 0.12),
+        (0.2, 0.25),
+        (0.3, 0.37),
+        (0.4, 0.49),
+        (0.5, 0.56),
+        (0.6, 0.6),
+        (0.7, 0.63),
+        (0.8, 0.65),
+        (0.9, 0.66),
+        (1.0, 0.67),
+        (1.1, 0.67),
+        (1.2, 0.68),
+        (1.3, 0.68),
+        (1.4, 0.68)
+    ]
+    x_values, y_values = zip(*data_points)
+    return np.array(x_values), np.array(y_values)
+
+def compute_K_b_material12():
+    """Returns the x and y values for e/D vs K_br."""
+    data_points = [
+        (0.5, 0),
+        (1, 0.85),
+        (1.3, 1.1),
+        (1.9, 1.45),
+        (2.2, 1.55)
+    ]
+    x_values, y_values = zip(*data_points)
+    return np.array(x_values), np.array(y_values)
+
+def compute_Kt_material1():
+    """Returns the x and y values for W/D vs Kt."""
+    data_points = [
+        (1, 1),
+        (1.5, 0.96),
+        (3, 0.92),
+        (3.5, 0.908),
+        (3.9, 0.9),
+        (4.2, 0.88),
+        (4.4, 0.86),
+        (4.6, 0.84),
+        (4.8, 0.8),
+        (4.9, 0.76)
+    ]
+    x_values, y_values = zip(*data_points)
+    return np.array(x_values), np.array(y_values)
+
+def fit_and_plot(data_func, fitting_functions, title, xlabel, ylabel, x_range):
+    """Fits the data from the given function, plots the result, and prints the coefficients."""
+    x_vect, y_vect = data_func()
+
+    # Create the design matrix
+    design_matrix = create_design_matrix(x_vect, fitting_functions)
+
+    # Perform the least squares fit
+    A = design_matrix.T @ design_matrix
+    b = design_matrix.T @ y_vect
+    coefficients = linalg.solve(A, b)
+
+    # Print coefficients
+    print(f"Coefficients for {title}:")
+    for i, coef in enumerate(coefficients):
+        print(f"  Coefficient of fit{i+1}(x): {coef}")
+    print()
+
+    # Interpolate using the fitted function
+    sample_x = np.linspace(x_range[0], x_range[1], 1000)  # Define range for interpolation
+    sample_y = sum(coefficients[i] * vectorized(fit)(sample_x) for i, fit in enumerate(fitting_functions))
+
+    # Plot the original data points and the interpolated curve
+    plt.scatter(x_vect, y_vect, label="Data Points", color='blue')
+    plt.plot(sample_x, sample_y, color='red', label="Fitted Curve")
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.legend()
+    plt.show()
+
+def main():
+    # Define the fitting functions (can adjust degree as needed)
+    fitting_functions = (fit1, fit2, fit3, fit4)
+
+    # Fit, plot, and print coefficients for each dataset
+    fit_and_plot(compute_K_tu_material1, fitting_functions, "K_tu vs A_av/A_br", "A_av/A_br", "K_tu", [0, 1.5])
+    fit_and_plot(compute_K_b_material12, fitting_functions, "K_br vs e/D", "e/D", "K_br", [0.5, 2.2])
+    fit_and_plot(compute_Kt_material1, fitting_functions, "Kt vs W/D", "W/D", "Kt", [1, 5])
+
+if __name__ == '__main__':
+    main()
